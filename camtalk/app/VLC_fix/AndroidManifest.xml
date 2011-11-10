@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest android:versionCode="1"
+    android:versionName="0.0-alpha" 
+    android:installLocation="auto" package="com.avadesign.camvideo" xmlns:android="http://schemas.android.com/apk/res/android">
+	<uses-sdk
+		android:minSdkVersion="8" />
+      	<application 
+			android:icon="@drawable/icon"
+			android:label="@string/app_name">
+	     	<!-- 
+	        <activity 
+	        	android:label="@string/app_name"
+	        	android:icon="@drawable/icon" 
+	        	android:name=".MainActivity"
+	        	android:theme="@android:style/Theme.NoTitleBar"
+	        	android:configChanges="orientation">
+	        </activity>
+	        
+	       	<activity 
+	        	android:name="org.videolan.vlc.android.SearchActivity" 
+	        	android:theme="@android:style/Theme.NoTitleBar"
+	        	android:configChanges="orientation">
+	        	<intent-filter>
+	                <action android:name="android.intent.action.SEARCH" />
+	            </intent-filter>
+	        	<meta-data android:name="android.app.searchable"
+	            	android:resource="@xml/searchable"/>	
+	        </activity>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.AboutActivity" 
+	        	android:theme="@android:style/Theme.NoTitleBar"/>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.PreferencesActivity" 
+	        	android:theme="@android:style/Theme.NoTitleBar"/>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.VideoActivityGroup" 
+	        	android:theme="@android:style/Theme.NoTitleBar"/>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.VideoListActivity" 
+	        	android:theme="@android:style/Theme.NoTitleBar"/>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.MediaInfoActivity" 
+	        	android:theme="@android:style/Theme.NoTitleBar"/>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.mutiplevideoView" 
+	        	android:theme="@android:style/Theme.NoTitleBar.Fullscreen" 
+	        	android:configChanges="orientation">
+	       	</activity>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.AudioBrowserActivity" 
+	        	android:theme="@android:style/Theme.NoTitleBar"/>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.AudioActivityGroup" 
+	        	android:theme="@android:style/Theme.NoTitleBar"/>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.AudioPlayerActivity" 
+	        	android:theme="@android:style/Theme.NoTitleBar"/>
+	        <service 
+	        	android:name="org.videolan.vlc.android.AudioService"/>
+	        <activity 
+	        	android:name="org.videolan.vlc.android.BrowserActivity" 
+	        	android:label="Media Directories"
+	        	android:theme="@android:style/Theme">
+	        </activity>
+	        <receiver 
+	        	android:name="org.videolan.vlc.android.PhoneStateReceiver">
+				<intent-filter>
+					<action android:name="android.intent.action.PHONE_STATE" />
+				</intent-filter>
+			</receiver>
+	         -->
+	        <activity 
+	        	android:name="org.videolan.vlc.android.VideoPlayerActivity" 
+	        	android:theme="@android:style/Theme.NoTitleBar.Fullscreen" 
+	        	android:configChanges="orientation" 
+	        	android:screenOrientation="landscape">
+	        	<!-- 
+	        	<intent-filter>
+	                <action android:name="android.intent.action.VIEW" />
+	                <category android:name="android.intent.category.DEFAULT" />
+                    <data android:mimeType="video/*" />
+                </intent-filter>
+                 -->
+	       	</activity>
+	       	
+	        <activity 
+	        	android:label="@string/app_name"
+	        	android:icon="@drawable/icon" 
+	        	android:name="Home"
+	        	android:theme="@android:style/Theme.NoTitleBar"
+	        	android:screenOrientation="landscape"
+	        	android:configChanges="orientation">
+	        	
+	        </activity>
+	        <activity 
+	        	android:name="NewCam">
+	        </activity>
+	        <activity 
+	        	android:name="Start">
+	        	<intent-filter>
+	                <action android:name="android.intent.action.MAIN" />
+	                <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
+	        </activity>
+	        <activity 
+	        	android:name="Login">
+	        </activity>
+	       	<activity 
+	       		android:name="Register">
+	       	</activity>
+	       	<service android:name="Socket_service"/>
+	       	
+	       	<activity 
+	       		android:theme="@android:style/Theme.Dialog" 
+	       		android:configChanges="orientation"
+	       		android:name="DialogActivity">
+	       	</activity>
+	    </application>
+
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.VIBRATE"></uses-permission>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"></uses-permission> 
+    
+
+</manifest> 

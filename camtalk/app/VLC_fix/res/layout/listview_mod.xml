@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RelativeLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#80808080">
+    
+    <LinearLayout 
+    	android:orientation="horizontal"
+    	android:layout_height="wrap_content" 
+    	android:layout_width="fill_parent"
+    	android:weightSum="1">
+    	
+    	<ImageView 
+    		android:layout_height="wrap_content" 
+    		android:layout_width="wrap_content" 
+    		android:src="@drawable/cam_no">
+    	</ImageView>
+        
+        <LinearLayout 
+        	android:orientation="vertical" 
+        	android:layout_width="wrap_content" 
+        	android:layout_height="wrap_content">
+            
+            <TextView
+				android:text="IPCam1" 
+				android:id="@+id/listview_mod_ipcamName" 
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" 
+				android:textSize="30sp">
+			</TextView>
+            
+            <TextView 
+            	android:text="rtsp://192.168.1.225/ipcam_h264.sdp" 
+            	android:id="@+id/listview_mod_ip" 
+            	android:layout_width="wrap_content" 
+            	android:layout_height="wrap_content">
+            </TextView>
+				
+		</LinearLayout>
+	
+    </LinearLayout>
+    
+    
+</RelativeLayout>

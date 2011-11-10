@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+     <TextView 
+    	android:text="Account" 
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content">
+    </TextView>
+    
+    <EditText 
+    	android:text="1234@1234" 
+    	android:id="@+id/register_userAcc" 
+    	android:layout_height="wrap_content" 
+    	android:layout_width="match_parent"
+    	android:singleLine="true">
+        <requestFocus></requestFocus>
+    </EditText>
+    
+    <TextView 
+    	android:text="Password" 
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content">
+    </TextView>
+    
+    <EditText 
+   		android:text="123" 
+    	android:id="@+id/register_userPwd" 
+    	android:layout_height="wrap_content" 
+    	android:layout_width="match_parent"
+    	android:password="true"
+      	android:singleLine="true">
+    </EditText>
+    
+    <TextView 
+    	android:text="Re-enter Password" 
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content">
+    </TextView>
+    
+    <EditText 
+    	android:text="123" 
+    	android:id="@+id/register_reuserPwd" 
+    	android:layout_height="wrap_content" 
+    	android:layout_width="match_parent"
+		android:password="true"
+      	android:singleLine="true">
+    </EditText>
+    
+    <TextView 
+    	android:text=" " 
+    	android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+	</TextView>
+   
+    <LinearLayout 
+    	android:layout_height="wrap_content"
+    	android:layout_width="match_parent">
+        
+         <Button 
+        	android:id="@+id/register_register" 
+        	android:layout_height="wrap_content" 
+        	android:text="Register" 
+        	android:layout_width="fill_parent"
+        	android:layout_weight="1">
+        </Button>
+    </LinearLayout>
+
+</LinearLayout>
