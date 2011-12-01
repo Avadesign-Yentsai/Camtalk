@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">CamTalk</string>
+    <string name="app_name">HomeGuard</string>
     <string name="filebrowser_sdfail">Unable to open SD card. Please check it is mounted correctly.</string>
     <string name="filebrowser_root">&lt;root&gt;</string>
     <string name="filebrowser_parent">..</string>
@@ -26,4 +26,10 @@
     <string name="info_title">Information</string>
     <string name="unknown_artist">Unknown Artist</string>
     <string name="unknown_album">Unknown Album</string>
+    
+    <string name="home_camlist">Camera List</string>
+    <string name="home_setting">Setting</string>
+    <string name="home_eventlog">EventLog</string>
+    <string name="home_about">About</string>
+    <string name="home_exit">Exit</string>
 </resources>

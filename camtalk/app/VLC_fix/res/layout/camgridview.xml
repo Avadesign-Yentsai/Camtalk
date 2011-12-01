@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background">
+    
+    <LinearLayout 
+   		android:orientation="vertical" 
+   		android:layout_width="wrap_content" 
+   		android:background="@drawable/backg_gardient" 
+   		android:layout_height="wrap_content" 
+   		android:layout_alignParentTop="true" 
+   		android:layout_alignParentRight="true" 
+   		android:layout_alignParentBottom="true">
+   		
+   		<ImageButton android:src="@drawable/reload_btn" android:layout_width="wrap_content" android:background="#00000000" android:id="@+id/camgridview_reload" android:layout_weight="1" android:layout_height="wrap_content"></ImageButton>
+   		<ImageButton android:src="@drawable/gridview_btn" android:layout_width="wrap_content" android:background="#00000000" android:id="@+id/camgridview_gridview" android:layout_weight="1" android:layout_height="wrap_content"></ImageButton>
+   		<ImageButton android:src="@drawable/listview_btn" android:layout_width="wrap_content" android:background="#00000000" android:id="@+id/camgridview_listview" android:layout_weight="1" android:layout_height="wrap_content"></ImageButton>
+   		
+   	</LinearLayout>
+   	
+   	<GridView 
+   		android:id="@+id/camgridview_gridView" 
+   		android:layout_height="wrap_content" 
+   		android:layout_width="match_parent" 
+   		android:numColumns="2" 
+   		android:layout_alignParentTop="true" 
+   		android:layout_alignParentLeft="true" 
+   		android:layout_alignRight="@+id/camlist_listView">
+   	</GridView>
+    
+</RelativeLayout>

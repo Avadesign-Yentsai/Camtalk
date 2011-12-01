@@ -1,15 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=BIG5"
-    pageEncoding="BIG5"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
 <%@ page import="java.sql.*"%>
 <%@ page import="com.ava.camtalk.*" %>
 
 <%
-	DBInfo gdi =new DBInfo();
-	
-	String url=gdi.getDBurl();
-	String DBuser=gdi.getDBuser();
-	String DBpassword=gdi.getDBpassword();
-	
 	String Email=new String(request.getParameter("Email").getBytes("ISO-8859-1"),"UTF-8");
 	String Pwd=new String(request.getParameter("Pwd").getBytes("ISO-8859-1"),"UTF-8");
 	

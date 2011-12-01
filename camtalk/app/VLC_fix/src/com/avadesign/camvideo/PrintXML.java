@@ -9,9 +9,9 @@ import android.util.Xml;
 
 public class PrintXML 
 {
-	private static String TAG = "PrintXML";
+	private static String TAG = "camtalk/PrintXML";
 	
-	public static String outXml(String Acc,String Pwd)
+	public static String outUserInfoXml(String Acc,String Pwd)
     {
     	XmlSerializer serializer = Xml.newSerializer();
     	StringWriter writer = new StringWriter();
@@ -57,5 +57,42 @@ public class PrintXML
     	}
     }
 	
+	public static String outCamInfoXml(String[] attrName, String[][] camAttr)
+    {
+    	XmlSerializer serializer = Xml.newSerializer();
+    	StringWriter writer = new StringWriter();
+    	try
+    	{
+	    	serializer.setOutput(writer);
+	
+	    	serializer.startDocument("UTF-8",true);
+	    	
+	    	serializer.startTag("","CamView");
+	    	
+	    	for(int i=0;i<camAttr.length;i++)
+	    	{
+		    	
+		    	serializer.startTag("","CamInfo");
+		    	
+		    	for(int j=0;j<attrName.length;j++)
+		    	{
+		    		serializer.startTag("",attrName[j]);
+			    	serializer.text(camAttr[i][j]);
+			    	serializer.endTag("",attrName[j]);
+		    	}
+		    	
+		    	serializer.endTag("","CamInfo");
+	    	}
+	    	
+	    	serializer.endTag("","CamView");
+	    	
+	    	serializer.endDocument();
+	    	return writer.toString();
+    	}
+    	catch(Exception e)
+    	{
+    		throw new RuntimeException(e);
+    	}
+    }
 
 }

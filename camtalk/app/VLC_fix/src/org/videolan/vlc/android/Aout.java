@@ -42,7 +42,9 @@ public class Aout {
         {
             Log.w(TAG, "Could not write all the samples to the audio device");
         }
+        
         mAudioTrack.play();
+        
     }
     
 }

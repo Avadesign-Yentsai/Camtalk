@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LinearLayout 
+	xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+	android:background="#00000000">
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text=" " android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+    <TextView android:id="@+id/eventlist_mod_date" android:gravity="center" android:text="Date" android:textColor="#FF191970" android:layout_height="wrap_content" android:textAppearance="?android:attr/textAppearanceLarge" android:layout_below="@+id/textView1" android:layout_alignParentLeft="true" android:layout_alignParentRight="true" android:layout_width="match_parent"></TextView>
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:text=" " android:textAppearance="?android:attr/textAppearanceLarge"></TextView>
+   
+</LinearLayout>

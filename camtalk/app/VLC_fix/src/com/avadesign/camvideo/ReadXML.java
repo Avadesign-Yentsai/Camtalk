@@ -14,56 +14,66 @@ import android.util.Log;
 
 public class ReadXML 
 {
-	  public static String[] readXML(InputStream XMLinputStream,String TagName) 
-	    {
-	    	  String[] re = null;
-	    	  DocumentBuilderFactory docBuilderFactory = null;
-	    	  DocumentBuilder docBuilder = null;
-	    	  Document doc = null;
+	  public static String[][] readCamInfoXML(InputStream XMLinputStream,String TagName,String[] attr) 
+	  {
+		  String[][] re = null;
+    	  DocumentBuilderFactory docBuilderFactory = null;
+    	  DocumentBuilder docBuilder = null;
+    	  Document doc = null;
+    	 
+    	  try 
+    	  {
+    		  docBuilderFactory = DocumentBuilderFactory.newInstance();
+	    	  docBuilder = docBuilderFactory.newDocumentBuilder();
+	    	  doc = docBuilder.parse(XMLinputStream);
+	    	  doc.getDocumentElement().normalize();
+	    	  
+	    	  NodeList nodeList = doc.getElementsByTagName(TagName);
+	    	  
+	    	  int camNum =nodeList.getLength();//XMLずIPCAM计秖
+	    	  int camAttribNum=doc.getDocumentElement().getFirstChild().getChildNodes().getLength();//IPCAM戈癟ヘ计秖
+	    	  
+	    	  /*
+	    	   * camAttribNum ゲ斗单 attr.length 
+	    	   */
 	    	 
-	    	  try 
+	    	  re=new String[camNum][camAttribNum];
+	    	  
+	    	  
+	    	  for (int i = 0; i <camNum; i++) 
 	    	  {
-	    		  docBuilderFactory = DocumentBuilderFactory.newInstance();
-		    	  docBuilder = docBuilderFactory.newDocumentBuilder();
-		    	  doc = docBuilder.parse(XMLinputStream);
-		    	  doc.getDocumentElement().normalize();
-		    	  
-		    	  NodeList nodeList = doc.getElementsByTagName(TagName);
-		    	  
-		    	  int camAttribNum=doc.getDocumentElement().getFirstChild().getChildNodes().getLength();//–User戈癟ヘ计秖
-		    	 
-		    	  re=new String[camAttribNum];
-		    	  
-		    	  Node nd = nodeList.item(0);
+	    		  Node nd = nodeList.item(i);
 	    		  if (nd.getNodeType() == Node.ELEMENT_NODE) 
 	    		  {
 	    			  Element eElement = (Element) nd;
-	    			  re[0]=getTagValue("UserAcc", eElement);
-	    			  re[1]=getTagValue("UserPwd", eElement);
+	    			  for (int j = 0; j <attr.length; j++) 
+	    			  {
+		    			  re[i][j]=getTagValue(attr[j], eElement);
+	    			  }
 	    		  }
-		    	  
-		    	  
-	    	  } 
-	    	  catch (Exception e)
-	    	  {
-	    		  e.printStackTrace();
-	    		  Log.v("testXML",e.toString());
-	    	  } 
-	    	  finally 
-	    	  {
-	    		  doc = null;
-	    		  docBuilder = null;
-	    		  docBuilderFactory = null;
 	    	  }
-	    	  return re;
-	    }
+	    	  
+    	  } 
+    	  catch (Exception e)
+    	  {
+    		  e.printStackTrace();
+    		  Log.v("ReadXML",e.toString());
+    	  } 
+    	  finally 
+    	  {
+    		  doc = null;
+    		  docBuilder = null;
+    		  docBuilderFactory = null;
+    	  }
+    	  return re;
+	  }
 
-	private static String getTagValue(String  sTag, Element eElement)
-	{
-		NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
+	  private static String getTagValue(String  sTag, Element eElement)
+	  {
+		  NodeList nlList = eElement.getElementsByTagName(sTag).item(0).getChildNodes();
 		 
-        Node nValue = (Node) nlList.item(0);
+		  Node nValue = (Node) nlList.item(0);
  
-        return nValue.getNodeValue();
-	}
+		  return nValue.getNodeValue();
+	  }
 }

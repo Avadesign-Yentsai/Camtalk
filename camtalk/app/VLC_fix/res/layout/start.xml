@@ -2,8 +2,25 @@
 <RelativeLayout 
 	xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:background="@drawable/background"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <ProgressBar android:id="@+id/progressBar1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_centerVertical="true" android:layout_centerHorizontal="true"></ProgressBar>
     
+    <ProgressBar 
+    	android:layout_width="wrap_content" 
+    	android:layout_height="wrap_content" 
+    	android:layout_centerVertical="true" 
+    	android:layout_centerHorizontal="true" 
+    	android:id="@+id/start_progressBar">
+    </ProgressBar>
+    
+    <TextView 
+    	android:layout_height="wrap_content" 
+    	android:text="Loading..." 
+    	android:layout_width="wrap_content" 
+    	android:layout_below="@+id/start_progressBar" 
+    	android:layout_centerHorizontal="true" 
+    	android:textColor="#FF000080">
+    </TextView>
+        
 </RelativeLayout>

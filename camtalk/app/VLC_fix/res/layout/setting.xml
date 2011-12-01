@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background"
+    >
+	<LinearLayout android:orientation="vertical" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_centerVertical="true" android:layout_alignParentLeft="true" android:layout_alignParentRight="true" android:id="@+id/linearLayout1">
+		<TextView android:textColor="#000000" android:textSize="30sp" android:layout_height="wrap_content" android:id="@+id/text" android:text="家庭保全選項" android:layout_width="match_parent" android:gravity="center"></TextView>
+		<RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+				<ImageButton 
+					android:background="#00000000" 
+					android:layout_height="wrap_content" 
+					android:id="@+id/ch_recive_btn" 
+					android:layout_width="wrap_content" 
+					android:layout_alignParentTop="true" 
+					android:layout_centerHorizontal="true">
+				</ImageButton>
+				
+				<TextView 
+					android:textColor="#FFFFFFFF" 
+					android:layout_height="wrap_content" 
+					android:id="@+id/ch_recive_text" 
+					android:text="TextView" 
+					android:layout_width="wrap_content" 
+					android:layout_centerVertical="true" 
+					android:layout_centerHorizontal="true" 
+					android:textSize="20sp">
+				</TextView>
+				
+		</RelativeLayout>
+	</LinearLayout>
+	
+	<!-- 
+	<RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/relativeLayout1" android:layout_below="@+id/linearLayout1" android:layout_centerHorizontal="true">
+				
+				<ImageButton 
+					android:background="#00000000" 
+					android:layout_height="wrap_content" 
+					android:id="@+id/ch_dia_btn" 
+					android:layout_width="wrap_content" 
+					android:layout_alignParentTop="true" 
+					android:layout_centerHorizontal="true">
+				</ImageButton>
+				
+				<TextView 
+					android:textColor="#FFFFFFFF" 
+					android:layout_height="wrap_content" 
+					android:id="@+id/ch_dia_text" 
+					android:text="TextView" 
+					android:layout_width="wrap_content" 
+					android:layout_centerVertical="true" 
+					android:layout_centerHorizontal="true" 
+					android:textSize="20sp">
+				</TextView>	
+	</RelativeLayout>
+	 -->
+</RelativeLayout>

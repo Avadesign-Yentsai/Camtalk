@@ -4,13 +4,15 @@
 <%@ page import="com.ava.camtalk.*" %>
 
 <%
+
 	String url=DBInfo.getDBurl();
 	String DBuser=DBInfo.getDBuser();
 	String DBpassword=DBInfo.getDBpassword();
 	
-	String Email=new String(request.getParameter("Email").getBytes("ISO-8859-1"),"UTF-8");
+	String Email=new String(request.getParameter("Email").getBytes("ISO-8859-1"),"UTF-8").toLowerCase();
 	String Pwd=new String(request.getParameter("Pwd").getBytes("ISO-8859-1"),"UTF-8");
 	
+	//­n­×§ï
 	try
 	{
 		Connection conn = DriverManager.getConnection(url+"&user="+DBuser+"&password="+DBpassword);

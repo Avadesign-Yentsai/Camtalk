@@ -6,7 +6,7 @@ public class DoLogin
 {
 	public static String doLogin(String Email, String Pwd) 
 	{
-		String TAG="doLogin";
+		String TAG="camtalk/doLogin";
 		
 		String[] input = new String[7];
 		

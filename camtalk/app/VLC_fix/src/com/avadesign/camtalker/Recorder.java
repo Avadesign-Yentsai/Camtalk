@@ -155,6 +155,10 @@ public class Recorder extends Thread {
 	public synchronized void pauseAudio() {				
 		isRunning = false;	
 		try {
+			if(socket.isConnected())
+			{
+				Log.d("1111111","true");
+			}
 			socket.close();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

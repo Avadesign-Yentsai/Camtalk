@@ -1,5 +1,8 @@
 package org.videolan.vlc.android;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,9 +10,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -29,12 +30,15 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.avadesign.camtalker.Recorder;
-import com.avadesign.camvideo.Home;
+import com.avadesign.camvideo.Camlist;
 import com.avadesign.camvideo.KeyFinder;
 import com.avadesign.camvideo.LoadCamlist;
 import com.avadesign.camvideo.R;
+import com.avadesign.camvideo.Socket_service;
 import com.avadesign.codecs.GSM;
 
 public class VideoPlayerActivity extends Activity 
@@ -48,7 +52,6 @@ public class VideoPlayerActivity extends Activity
 	private SurfaceHolder mSurfaceHolder;
 	private LibVLC mLibVLC;
 	private ImageButton MIC;
-	private ImageButton getCamList;
 	
 	private static final int SURFACE_FIT_HORIZONTAL = 0;
 	private static final int SURFACE_FIT_VERTICAL = 1;
@@ -60,7 +63,7 @@ public class VideoPlayerActivity extends Activity
 	
 	private static Recorder recorder;
 	private static boolean isStarting = true;
-	private static boolean istalking = false;
+	private static boolean isTalking = false;
 	
 	
 	/** Overlay */
@@ -72,6 +75,7 @@ public class VideoPlayerActivity extends Activity
 
 	// stop screen from dimming
 	private WakeLock mWakeLock;
+	
 	
 	private String camUrl;
 	private String micIP;
@@ -87,6 +91,12 @@ public class VideoPlayerActivity extends Activity
 	private String[] camname;
 	private Map<String, String> map; //傳遞給SocketConn.java用,<cam ip ,cam name>
 	
+	private boolean noReply;
+	private boolean lock_clic; //遇到無法連線的IPCAM太早返回會當機,大約10秒等VLC的執行序結束再跳出才正常
+	private int ReplyTime = 11000;
+	private Handler handler = new Handler();
+	private ProgressBar pb;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -94,7 +104,7 @@ public class VideoPlayerActivity extends Activity
 		setContentView(R.layout.player_surface);
 		
 		Bundle bundle=this.getIntent().getExtras();
-        camUrl=bundle.getString("KEY_CAMIP");
+        camUrl=bundle.getString("KEY_CAMURL");
         micIP=bundle.getString("KEY_MICIP");
         micPort=bundle.getInt("KEY_MICPORT");
         micAc=bundle.getString("KEY_MICAC");
@@ -102,7 +112,12 @@ public class VideoPlayerActivity extends Activity
         userAcc=bundle.getString("KEY_UserAcc");
         userPwd=bundle.getString("KEY_UserPwd");
         
-        /*
+        Intent intent = new Intent();
+		intent.setAction(Socket_service.CH_WATCHING);
+		intent.putExtra("URL", camUrl);
+		sendBroadcast(intent);
+		
+		/*
         //Audio
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
         int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
@@ -110,83 +125,33 @@ public class VideoPlayerActivity extends Activity
         */
         
         //MIC
+		
         init();
         MIC = (ImageButton)findViewById(R.id.play_talk);
+        MIC.setVisibility(View.INVISIBLE);
         MIC.setOnClickListener(new Button.OnClickListener()
         {
         	public void onClick(View V)
         	{
-        		if(!istalking)
+        		if(!isTalking)
         		{
         			MIC.setBackgroundColor(Color.argb(255, 255, 0, 0));
-        			istalking=true;
+        			isTalking=true;
         			recorder.resumeAudio(micIP,micPort,micAc,micPw);
         			Log.d("Camtalker", "mBtStartTalk");
         		}
         		else
         		{
         			MIC.setBackgroundColor(Color.argb(0, 0, 0, 0));
-        			istalking=false;
+        			isTalking=false;
         			recorder.pauseAudio();
         			Log.d("Camtalker", "mBtStopTalk");
         		}
 
         	}
         });
-      
-        //CamList
-        getCamList = (ImageButton)findViewById(R.id.play_camlist);
-        getCamList.setOnClickListener(new Button.OnClickListener()
-        {
-        	public void onClick(View V)
-        	{
-        		LoadCamData();
-        		
-        		AlertDialog.Builder builder = new AlertDialog.Builder(VideoPlayerActivity.this);   
-        		builder.setTitle("Camera List");  
-        		builder.setItems(camname, new DialogInterface.OnClickListener()
-		        {  
-        			public void onClick(DialogInterface dialog, int which) 
-		            {  
-        				
-        				//必須和key順序相符
-        				final String name = attr[which][0];
-        				final String talkac = attr[which][1];
-        				final String talkpw = attr[which][2];
-        				final String talkport = attr[which][3];
-        				final String videoport = attr[which][4];
-        				final String videocode = attr[which][5];
-        				final String ip = attr[which][6];
-        				
-        				finish();
-        				Intent intent=new Intent();
-		                intent.setClass(VideoPlayerActivity.this, VideoPlayerActivity.class);
-		               
-		                Bundle bundle =new Bundle();
-		                bundle.putString("KEY_MICIP", ip);
-	                	bundle.putInt("KEY_MICPORT",Integer.valueOf(talkport));
-	                	bundle.putString("KEY_MICAC",talkac);
-	                	bundle.putString("KEY_MICPW", talkpw);
-	                	bundle.putString("KEY_UserAcc", userAcc);
-	                	bundle.putString("KEY_UserPwd", userPwd);
-	                	
-		                if(videocode.equals("h264"))
-		                {
-		                	bundle.putString("KEY_CAMIP", "rtsp://"+ip+":"+videoport+"/ipcam_h264.sdp");
-		                }
-		                else if(videocode.equals("mpeg4"))
-		                {
-		                	bundle.putString("KEY_CAMIP", "rtsp://"+ip+":"+videoport+"/ipcam.sdp");
-		                }
-		                
-		                intent.putExtras(bundle);
-		               	startActivity(intent);
-		            }  
-		        });  
-        		builder.create().show();  
-        	}
-        });
-        
+      	
+       
 		
         // stop screen from dimming
 		PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
@@ -210,87 +175,25 @@ public class VideoPlayerActivity extends Activity
 		EventManager em = EventManager.getIntance();
 		em.addHandler(eventHandler);
 
-		load();
+		noReply = true;
+		lock_clic = true;
+		handler.postDelayed(checkRe, ReplyTime);
 		
 	}
 	
-	
-	protected void LoadCamData() 
+	private Runnable checkRe = new Runnable() 
 	{
-		String list = LoadCamlist.load(userAcc, userPwd);
-		
-		if(!list.equals("[]"))//資料不為空
+        public void run() 
         {
-        	String key[] = {"name","talkac","talkpw","talkport","videoport","videocode","ip"}; //必須和list回傳的資料順序符合 ,名稱是jsp裡的CamInfo.java設定的,若修改,CamInfo.java的getItem()也必須改
-        	
-        	/*分析傳回的資料開始*/
-	        list = list.replace("[", "");
-	        list = list.replace("]", "");
-	        
-	        caminfo=list.split("\\},\\{");
-	        
-	        attr = new String[caminfo.length][key.length];
-	        camip = new String[caminfo.length];
-	        camname = new String[caminfo.length];
-	        
-	        for(int i=0; i<caminfo.length; i++)
-	        {
-	        	caminfo[i] = caminfo[i].toString().replace("{", "");
-	        	caminfo[i] = caminfo[i].toString().replace("}", "");
-	        	StringBuffer sb = new StringBuffer("{");
-	        	sb = sb.append(caminfo[i].toString());
-	        	sb = sb.append("}");
-	        	
-	        	Log.d(TAG,sb.toString());
-	        	
-	        	for(int j=0; j<key.length; j++)
-	        	{
-		        	JSONParser parser = new JSONParser();
-		        	KeyFinder finder = new KeyFinder();
-		        	try
-		        	{
-			        	finder.setMatchKey(key[j]);
-		        		while(!finder.isEnd())
-		        		{
-		        			parser.parse(sb.toString(), finder, true);
-		        			if(finder.isFound())
-		        			{
-		        				finder.setFound(false);
-		        				attr[i][j]=finder.getValue().toString();
-		        				
-		        				if(key[j].equals("ip"))
-		        				{
-		        					camip[i]=finder.getValue().toString();
-		        				}
-		        				
-		        				if(key[j].equals("name"))
-		        				{
-		        					camname[i]=finder.getValue().toString();
-		        				}
-		        			}
-		        		}   
-		        		
-		        	}
-		        	catch(ParseException pe)
-		        	{
-		        		pe.printStackTrace();
-		        	}
-	        	}
-	        }
-	        /*分析傳回的資料結束*/
-	        
-	        //map是要傳遞給SocketConn.java用
-	        map =  new HashMap<String, String>();
-	        for(int i=0; i<caminfo.length; i++)
-	        {
-	        	map.put(attr[i][6],attr[i][0]); // put(cam ip, cam name);
-	        	
-	        }
+        	lock_clic = false;
+        	if(noReply)
+        	{
+        		Toast.makeText(VideoPlayerActivity.this, "Unable to open this RTSP", Toast.LENGTH_LONG).show();
+        		backCamlist();
+        	}
         }
-		
-	}
-
-
+    };
+	
 	@Override
     public void onStart() 
 	{
@@ -299,23 +202,31 @@ public class VideoPlayerActivity extends Activity
     	// Initialize codec 
     	GSM.open();
     	
+    	
      }
 	
-	 public void onStop() 
+	@Override
+	public void onStop() 
     {
     	super.onStop();
     	
-       	//recorder.pauseAudio();    	
+       	recorder.pauseAudio();    	
     	
     	// Release codec resources
     	GSM.close();
+    	
+    	
     } 
 	
-	   
+	@Override   
     public void onResume() 
     {
+		Intent intent = new Intent();
+		intent.setAction(Socket_service.CH_WATCHING);
+		intent.putExtra("URL", camUrl);
+		sendBroadcast(intent);
+		load();
     	super.onResume();  
-    	
     }
 	
 	@Override
@@ -323,9 +234,23 @@ public class VideoPlayerActivity extends Activity
 	{
 		super.onPause();
 		
+		//finish();// 加上這行改善情況:若在看cam的情況下收到動態通知再去看動態通知的cam,返回不會error
+		
+		if (mLibVLC.isPlaying())
+		{
+			pause();
+		}
+		
+		release();    
+		
+		Intent intent = new Intent();
+		intent.setAction(Socket_service.CH_WATCHING);
+		intent.putExtra("URL", "");
+		sendBroadcast(intent);
+		
 	}
-
-	@Override
+	/*
+	@Override //這段用在Jeff的HTC手機會當機
 	protected void onDestroy() 
 	{
 		if (mLibVLC.isPlaying())
@@ -334,18 +259,23 @@ public class VideoPlayerActivity extends Activity
 		if (mLibVLC != null) 
 		{
 			mLibVLC.stop();
+			mLibVLC.destroy(); //應該是在destroy的時候會出錯
 		}
-		
-		
 		
 		EventManager em = EventManager.getIntance();
 		em.removeHandler(eventHandler);
 		
 		release();    
 		
+		Intent intent = new Intent();
+		intent.setAction(Socket_service.CH_WATCHING2);
+		intent.putExtra("URL", "");
+		sendBroadcast(intent);
+		
 		super.onDestroy();
 		
 	}
+	*/
 
 	@Override
 	public boolean onTrackballEvent(MotionEvent event) {
@@ -367,16 +297,40 @@ public class VideoPlayerActivity extends Activity
 		mVideoWidth = width;	
 		Message msg = mHandler.obtainMessage(SURFACE_SIZE);
 		mHandler.sendMessage(msg);
+		
     }
+	
+	private Runnable m_Timer = new Runnable() 
+	{
+		@Override
+		public void run() 
+		{
+			noReply = false;
+            lock_clic = false;
+            buildInterface();
+		}
+
+		private void buildInterface() 
+		{
+			pb = (ProgressBar)findViewById(R.id.play_progressBar);
+	        pb.setVisibility(View.GONE);
+			MIC.setVisibility(View.VISIBLE);
+		}
+		
+	};
 	
 	/**
      *  Handle libvlc asynchronous events 
      */
-    private Handler eventHandler = new Handler() {
+    private Handler eventHandler = new Handler() 
+    {
         @Override
-        public void handleMessage(Message msg) {
-            switch (msg.getData().getInt("event")) {
+        public void handleMessage(Message msg) 
+        {
+            switch (msg.getData().getInt("event"))
+            {
                 case EventManager.MediaPlayerPlaying:
+                	mHandler.post(m_Timer);
                     Log.e(TAG, "MediaPlayerPlaying");
                     break;
                 case EventManager.MediaPlayerPaused:
@@ -384,6 +338,7 @@ public class VideoPlayerActivity extends Activity
                     break;
                 case EventManager.MediaPlayerStopped:
                     Log.e(TAG, "MediaPlayerStopped");
+                    //Toast.makeText(VideoPlayerActivity.this, "MediaPlayerStopped", Toast.LENGTH_SHORT).show();
                     break;
                 case EventManager.MediaPlayerEndReached:
                     Log.e(TAG, "MediaPlayerEndReached");
@@ -396,6 +351,8 @@ public class VideoPlayerActivity extends Activity
             }
            
         }
+
+		
     };
 	
 	/**
@@ -469,7 +426,8 @@ public class VideoPlayerActivity extends Activity
 	 * attach and disattach surface to the lib
 	 */
 	private SurfaceHolder.Callback mSurfaceCallback = new Callback() {		
-		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+		public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) 
+		{
 			mLibVLC.attachSurface(holder.getSurface(), VideoPlayerActivity.this, width, height);
 		}
 
@@ -486,12 +444,14 @@ public class VideoPlayerActivity extends Activity
 		mWakeLock.acquire();
 	}
 	
-	private void pause() {
+	private void pause() 
+	{
 		mLibVLC.pause();
 		mWakeLock.release();
 		
 		if (mLibVLC != null) {
 			mLibVLC.stop();
+			
 		}
 	}
 	
@@ -500,6 +460,7 @@ public class VideoPlayerActivity extends Activity
 		mLibVLC.readMedia(camUrl);
 		mWakeLock.acquire();
 	}
+	
 	
 	private void init() 
 	{
@@ -541,14 +502,36 @@ public class VideoPlayerActivity extends Activity
     		isStarting = true;     		
     	}
     }
-
+	
 	
 	@Override
 	public void onBackPressed() 
 	{
+		
+		if(lock_clic)
+		{
+			//do nothing
+		}
+		else
+		{
+			//finish();
+			backCamlist();
+		}
+		
+		
+		/*
 		Intent intent=new Intent();
     	intent.setClass(VideoPlayerActivity.this, Home.class);
 	    startActivity(intent);
-		System.exit(0);//Yen 離開時會有錯誤,取消System.exit(0)可查看錯誤
+	    */
+		
 	}
+	
+	private void backCamlist()
+	{
+		Intent intent=new Intent();
+    	intent.setClass(VideoPlayerActivity.this, Camlist.class);
+	    startActivity(intent);
+	}
+	
 }

@@ -47,7 +47,7 @@ public class Register extends Activity
             		
             		if(response.equals("true"))
             		{
-            			boolean b=writeXML("CamTalk.xml",PrintXML.outXml(acc.getText().toString(),pwd.getText().toString()));
+            			boolean b=writeXML("CamTalk.xml",PrintXML.outUserInfoXml(acc.getText().toString(),pwd.getText().toString()));
             			
             			Log.d(TAG,"Write XML:"+b);
             			

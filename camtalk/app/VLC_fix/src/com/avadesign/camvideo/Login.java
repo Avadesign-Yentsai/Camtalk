@@ -1,9 +1,13 @@
 package com.avadesign.camvideo;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+
+import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,9 +25,7 @@ public class Login extends Activity implements Runnable
 	private Button login;
 	private Button register;
 	
-	private String response;
-	
-	private String TAG = "Login";
+	private String TAG = "camtalk/Login";
 	
 	@Override   
 	protected void onCreate(Bundle savedInstanceState) 
@@ -36,32 +38,76 @@ public class Login extends Activity implements Runnable
 		login=(Button)findViewById(R.id.login_login);
 		register=(Button)findViewById(R.id.login_register);
 		
+		Bundle bundle=this.getIntent().getExtras();
+        String state = bundle.getString("KEY_STATE");
+       
+        InputStream is=null;
+        try 
+		{
+        	is=this.openFileInput("Camtalk.cfg");
+        	BufferedReader br = new BufferedReader(new InputStreamReader(is));
+        	
+        	StringBuffer sb = new StringBuffer("");
+        	
+        	String line = null;
+        	
+        	while((line = br.readLine()) != null)
+        	{
+        		sb.append(line);
+        	}
+        	
+        	JSONObject obj=(JSONObject) JSONValue.parse(sb.toString());
+        	acc.setText(obj.get("acc").toString().toLowerCase());
+        	pwd.setText(obj.get("pwd").toString().toLowerCase());
+        	Log.d(TAG,acc+","+pwd);
+        	
+		}
+		catch (Exception e) //無法讀取
+		{
+			Log.d(TAG,e.toString());
+		}
+		
+        
+        if(state.equals("2"))
+        {
+        	Toast.makeText(Login.this, "帳號密碼錯誤,請重新輸入", Toast.LENGTH_SHORT).show();
+        	acc.setText("");
+        	pwd.setText("");
+        }
+        else if(state.equals("3"))
+        {
+        	Toast.makeText(Login.this, "Server Error", Toast.LENGTH_SHORT).show();
+        }
+        else if(state.equals("4"))
+        {
+        	Toast.makeText(Login.this, "網路未連線", Toast.LENGTH_SHORT).show();
+        }
+		
 		login.setOnClickListener(new Button.OnClickListener()
         {
         	public void onClick(View V)
         	{
-        		response = DoLogin.doLogin(acc.getText().toString(),pwd.getText().toString());
-        		if(response.equals("true"))
+        		writeSetting("Camtalk.cfg");
+        		finish();
+    			Intent intent = new Intent();
+    			intent.setClass(Login.this, Start.class); //轉到Start驗證和下載camlist
+    			startActivity(intent);
+        		/*
+        		boolean b=writeXML("CamTalk.xml",PrintXML.outUserInfoXml(acc.getText().toString().toLowerCase(),pwd.getText().toString().toLowerCase()));
+        		
+        		if(b)
         		{
-        			//帳號密碼正確,寫入XML存到手機
-        			boolean b=writeXML("CamTalk.xml",PrintXML.outXml(acc.getText().toString(),pwd.getText().toString()));
-        			
-        			Log.d("TAG","Write XML:"+b);
-        			
         			finish();
-        			Intent intent=new Intent();
-        			intent.setClass(Login.this, Home.class);
+        			Intent intent = new Intent();
+        			intent.setClass(Login.this, Start.class); //轉到Start驗證和下載camlist
         			startActivity(intent);
         		}
-        		else if(response.equals("false"))
-        		{
-        			Toast.makeText(Login.this, "Invalid Account or password", Toast.LENGTH_SHORT).show();
-        			acc.requestFocus();
-        		}
+        		
         		else
         		{
-        			Toast.makeText(Login.this, "Server Error", Toast.LENGTH_SHORT).show();
+        			Toast.makeText(Login.this, "無法儲存帳號資料", Toast.LENGTH_SHORT).show();
         		}
+        		*/
         	}
         });
 		
@@ -75,32 +121,32 @@ public class Login extends Activity implements Runnable
     			startActivity(intent);
         	}
         });
+		
+		register.setEnabled(false);
 	}
 	
-	private boolean writeXML(String path,String txt)
+	
+	private void writeSetting(String path)
     {
 	    try
 	    {
 		    OutputStream os = openFileOutput(path,MODE_PRIVATE);
 		    OutputStreamWriter osw=new OutputStreamWriter(os);
-		    osw.write(txt);
+		    osw.write("{\"acc\":\""+acc.getText().toString().toLowerCase()+"\",\"pwd\":\""+pwd.getText().toString().toLowerCase()+"\",\"alert\":true,\"vibrator\":true,\"media\":true}");
 		    osw.close();
 		    os.close();
 	    }
-	    catch(FileNotFoundException e)
+	    catch(Exception e)
 	    {
-	    	return false;
-	    }catch(IOException e)
-	    {
-	    	return false;
+	    	Log.d(TAG,e.toString());
 	    }
-	    return true;
+	   
     }
-
+	
 	@Override
-	public void run() {
+	public void run() 
+	{
 		// TODO Auto-generated method stub
 		
 	}
-	
 }

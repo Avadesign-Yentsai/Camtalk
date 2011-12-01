@@ -3,8 +3,7 @@
 	xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="#80808080">
+    android:layout_height="fill_parent">
     
     <LinearLayout 
     	android:orientation="horizontal"
@@ -15,7 +14,7 @@
     	<ImageView 
     		android:layout_height="wrap_content" 
     		android:layout_width="wrap_content" 
-    		android:src="@drawable/cam_no">
+    		android:src="@drawable/cam">
     	</ImageView>
         
         <LinearLayout 
@@ -28,11 +27,13 @@
 				android:id="@+id/listview_mod_ipcamName" 
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" 
+				android:textColor="#FF191970"
 				android:textSize="30sp">
 			</TextView>
             
             <TextView 
             	android:text="rtsp://192.168.1.225/ipcam_h264.sdp" 
+            	android:textColor="#FF191970"
             	android:id="@+id/listview_mod_ip" 
             	android:layout_width="wrap_content" 
             	android:layout_height="wrap_content">
